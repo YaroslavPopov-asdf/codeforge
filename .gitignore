@@ -2,7 +2,9 @@ node_modules/
 .next/
 .env
 .env.local
-data/
+data/*.db
+data/*.db-wal
+data/*.db-shm
 /subjects/*/tasks/*/solution
 /runner/solution
 *.exe
