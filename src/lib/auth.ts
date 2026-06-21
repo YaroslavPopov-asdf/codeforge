@@ -3,17 +3,30 @@ import GitHub from "next-auth/providers/github"
 import type { Adapter } from "next-auth/adapters"
 import * as db from "./db"
 
+if (!process.env.AUTH_SECRET && !process.env.NEXTAUTH_SECRET) {
+  console.warn("WARNING: AUTH_SECRET is not set. Auth will fail with 'MissingSecret'.")
+  console.warn("Generate one with: openssl rand -base64 32")
+}
+
 const adapter = {
   createUser: async (user: any) => {
     await db.createUser(user)
     return (await db.queryUserByEmail(user.email)) ?? user
   },
-  getUser: async (id: string) => await db.queryUserById(id) ?? null,
-  getUserByEmail: async (email: string) => await db.queryUserByEmail(email) ?? null,
-  getUserByAccount: async ({ provider, providerAccountId }: { provider: string; providerAccountId: string }) =>
-    (await db.getUserByAccount(provider, providerAccountId)) ?? null,
+  getUser: async (id: string) => (await db.queryUserById(id)) ?? null,
+  getUserByEmail: async (email: string) => (await db.queryUserByEmail(email)) ?? null,
+  getUserByAccount: async ({
+    provider,
+    providerAccountId,
+  }: {
+    provider: string
+    providerAccountId: string
+  }) => (await db.getUserByAccount(provider, providerAccountId)) ?? null,
   updateUser: async (user: any) => (await db.queryUserById(user.id)) ?? user,
-  linkAccount: async (account: any) => { await db.linkAccount(account); return null },
+  linkAccount: async (account: any) => {
+    await db.linkAccount(account)
+    return null
+  },
   createSession: async (session: any) => {
     await db.createSession(session)
     return session
@@ -27,17 +40,26 @@ const adapter = {
     await db.updateSession(session.sessionToken, session.expires)
     return session
   },
-  deleteSession: async (sessionToken: string) => { await db.deleteSession(sessionToken); return null },
+  deleteSession: async (sessionToken: string) => {
+    await db.deleteSession(sessionToken)
+    return null
+  },
   createVerificationToken: async (data: any) => {
     await db.createVerificationToken(data.identifier, data.token, data.expires?.toISOString())
     return data
   },
-  useVerificationToken: async ({ identifier, token }: { identifier: string; token: string }) =>
-    (await db.useVerificationToken(identifier, token)) ?? null,
+  useVerificationToken: async ({
+    identifier,
+    token,
+  }: {
+    identifier: string
+    token: string
+  }) => (await db.useVerificationToken(identifier, token)) ?? null,
 } as Adapter
 
 export const config: NextAuthConfig = {
   adapter,
+  trustHost: true,
   providers: [
     GitHub({
       clientId: process.env.AUTH_GITHUB_ID ?? "",
