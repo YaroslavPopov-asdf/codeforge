@@ -1,0 +1,30 @@
+{
+  "type": "io",
+  "timeout": 5,
+  "cases": [
+    {
+      "name": "4 -> Even",
+      "stdin": "4",
+      "expected_stdout": "Even\n",
+      "expected_exit_code": 0
+    },
+    {
+      "name": "7 -> Odd",
+      "stdin": "7",
+      "expected_stdout": "Odd\n",
+      "expected_exit_code": 0
+    },
+    {
+      "name": "0 -> Even",
+      "stdin": "0",
+      "expected_stdout": "Even\n",
+      "expected_exit_code": 0
+    },
+    {
+      "name": "-3 -> Odd",
+      "stdin": "-3",
+      "expected_stdout": "Odd\n",
+      "expected_exit_code": 0
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "type": "io",
+  "timeout": 5,
+  "cases": [
+    {
+      "name": "5x3 = 15",
+      "stdin": "5 3",
+      "expected_stdout": "15\n",
+      "expected_exit_code": 0
+    },
+    {
+      "name": "10x10 = 100",
+      "stdin": "10 10",
+      "expected_stdout": "100\n",
+      "expected_exit_code": 0
+    },
+    {
+      "name": "7x2 = 14",
+      "stdin": "7 2",
+      "expected_stdout": "14\n",
+      "expected_exit_code": 0
+    }
+  ]
+}

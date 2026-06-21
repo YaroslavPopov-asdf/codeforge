@@ -1,0 +1,10 @@
+node_modules/
+.next/
+.env
+.env.local
+data/
+/subjects/*/tasks/*/solution
+/runner/solution
+*.exe
+tmp/
+.runner
