@@ -7,8 +7,7 @@ export async function getProgress(): Promise<
   const session = await auth()
   if (!session?.user?.id) return {}
 
-  const rows = db.getProgressByUserId(session.user.id)
-
+  const rows = await db.getProgressByUserId(session.user.id) as any[]
   const grouped: Record<string, { subjectId: string; taskId: string; completed: boolean }[]> = {}
   for (const row of rows) {
     if (!grouped[row.subject_id]) grouped[row.subject_id] = []
@@ -28,7 +27,7 @@ export async function markTaskCompleted(
   const session = await auth()
   if (!session?.user?.id) throw new Error("Not authenticated")
 
-  db.upsertProgress(session.user.id, subjectId, taskId, true)
+  await db.upsertProgress(session.user.id, subjectId, taskId, true)
 }
 
 export async function isTaskCompleted(
@@ -38,8 +37,8 @@ export async function isTaskCompleted(
   const session = await auth()
   if (!session?.user?.id) return false
 
-  const rows = db.getProgressByUserId(session.user.id)
+  const rows = await db.getProgressByUserId(session.user.id)
   return rows.some(
-    (r) => r.subject_id === subjectId && r.task_id === taskId && r.completed === 1
+    (r: any) => r.subject_id === subjectId && r.task_id === taskId && r.completed === 1
   )
 }
