@@ -39,21 +39,32 @@ export function CodeEditor({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ subjectId, taskId, code, language }),
       })
+      if (!res.ok) {
+        const text = await res.text()
+        setOutput(`Ошибка сервера (${res.status}): ${text}`)
+        setPassed(false)
+        return
+      }
+
       const data = await res.json()
 
-      setOutput(data.output ?? "")
+      setOutput(data.errors ?? data.output ?? "")
       setTestResults(data.testResults ?? [])
       setPassed(data.passed ?? false)
 
       if (data.passed) {
-        await fetch("/api/progress", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ subjectId, taskId }),
-        })
+        try {
+          await fetch("/api/progress", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ subjectId, taskId }),
+          })
+        } catch {
+          // progress save failure is non-critical
+        }
       }
     } catch {
-      setOutput("Ошибка при выполнении запроса")
+      setOutput("Ошибка при выполнении запроса. Проверьте, что runner запущен.")
       setPassed(false)
     } finally {
       setRunning(false)
@@ -72,6 +83,19 @@ export function CodeEditor({
         <textarea
           value={code}
           onChange={(e) => setCode(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Tab") {
+              e.preventDefault()
+              const ta = e.currentTarget
+              const start = ta.selectionStart
+              const end = ta.selectionEnd
+              const newVal = code.slice(0, start) + "\t" + code.slice(end)
+              setCode(newVal)
+              requestAnimationFrame(() => {
+                ta.selectionStart = ta.selectionEnd = start + 1
+              })
+            }
+          }}
           className="w-full h-64 bg-stone-900 border border-stone-700 rounded-lg p-4 font-mono text-sm text-stone-100 resize-y focus:outline-none focus:border-stone-500"
           spellCheck={false}
         />

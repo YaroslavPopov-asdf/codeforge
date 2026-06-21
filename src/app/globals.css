@@ -45,3 +45,18 @@ body {
 .prose th {
   background: #1c1917;
 }
+
+.prose p,
+.prose li,
+.prose ul,
+.prose ol {
+  line-height: 1.85;
+}
+
+.prose p {
+  margin-bottom: 1.25em;
+}
+
+.prose li {
+  margin-bottom: 0.5em;
+}

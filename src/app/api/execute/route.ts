@@ -52,23 +52,51 @@ export async function POST(req: NextRequest) {
   const runnerUrl = process.env.RUNNER_URL
 
   if (runnerUrl) {
-    const res = await fetch(`${runnerUrl}/execute`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        subject_id: subjectId,
-        task_id: taskId,
-        code,
-        language,
-        spec,
-      }),
-    })
-    const result = await res.json()
-    return Response.json(result)
+    try {
+      const res = await fetch(`${runnerUrl}/execute`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          subject_id: subjectId,
+          task_id: taskId,
+          code,
+          language,
+          spec,
+        }),
+        signal: AbortSignal.timeout(30000),
+      })
+      if (!res.ok) {
+        const text = await res.text()
+        return Response.json({
+          passed: false,
+          output: "",
+          errors: `Runner вернул ошибку (${res.status}): ${text}`,
+          testResults: [],
+        })
+      }
+      const result = await res.json()
+      return Response.json(result)
+    } catch (e) {
+      return Response.json({
+        passed: false,
+        output: "",
+        errors: `Runner недоступен: ${e instanceof Error ? e.message : String(e)}`,
+        testResults: [],
+      })
+    }
   }
 
-  const result = await runLocally(code, language, spec, taskDir)
-  return Response.json(result)
+  try {
+    const result = await runLocally(code, language, spec, taskDir)
+    return Response.json(result)
+  } catch (e) {
+    return Response.json({
+      passed: false,
+      output: "",
+      errors: `Локальное выполнение недоступно: ${e instanceof Error ? e.message : String(e)}`,
+      testResults: [],
+    })
+  }
 }
 
 async function runLocally(
