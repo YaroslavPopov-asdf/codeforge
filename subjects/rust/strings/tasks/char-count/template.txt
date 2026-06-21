@@ -1,0 +1,10 @@
+use std::io;
+
+fn main() {
+    let mut input = String::new();
+    io::stdin().read_line(&mut input).unwrap();
+    let parts: Vec<&str> = input.trim().splitn(2, ' ').collect();
+    let s = parts[0];
+    let c = parts[1].chars().next().unwrap();
+    // Напишите ваш код здесь
+}

@@ -1,0 +1,12 @@
+#include <iostream>
+using namespace std;
+
+// Напишите класс Rectangle здесь
+
+int main() {
+    int w, h;
+    cin >> w >> h;
+    Rectangle rect(w, h);
+    cout << rect.area() << endl;
+    return 0;
+}

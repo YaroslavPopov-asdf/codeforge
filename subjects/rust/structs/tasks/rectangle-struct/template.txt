@@ -1,0 +1,15 @@
+use std::io;
+
+// Напишите структуру Rectangle и её метод area здесь
+
+fn main() {
+    let mut input = String::new();
+    io::stdin().read_line(&mut input).unwrap();
+    let nums: Vec<u32> = input
+        .trim()
+        .split_whitespace()
+        .map(|s| s.parse().unwrap())
+        .collect();
+    let rect = Rectangle { width: nums[0], height: nums[1] };
+    println!("{}", rect.area());
+}

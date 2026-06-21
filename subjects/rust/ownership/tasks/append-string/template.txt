@@ -1,0 +1,11 @@
+use std::io;
+
+// Напишите функцию append_world здесь
+
+fn main() {
+    let mut input = String::new();
+    io::stdin().read_line(&mut input).unwrap();
+    let mut s = input.trim().to_string();
+    append_world(&mut s);
+    println!("{}", s);
+}

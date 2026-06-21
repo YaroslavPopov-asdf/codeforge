@@ -1,41 +1,28 @@
-# Работа со строками в C++
+# Строки в C++
 
-В C++ для работы со строками используется класс `std::string`:
+## std::string
 
 ```cpp
 #include <string>
 
-std::string s1 = "hello";
-std::string s2 = " world";
-std::string s3 = s1 + s2;  // конкатенация
+string s = "hello";
+string s2 = " " + "world";  // конкатенация
 ```
 
-## Основные методы
+## Методы строк
 
 ```cpp
-std::string s = "hello";
-
-s.length();    // длина строки (5)
-s[0];          // доступ по индексу ('h')
-s.at(0);       // безопасный доступ с проверкой
-s.push_back('!');  // добавить символ в конец
-s.pop_back();  // удалить последний символ
-```
-
-## Поиск и замена
-
-```cpp
-std::string s = "hello world";
-s.find("world");     // поиск подстроки (6)
-s.substr(0, 5);      // подстрока ("hello")
-s.replace(0, 5, "hi"); // замена ("hi world")
+s.length()      // длина
+s.size()        // длина (аналог)
+s.substr(pos, len)  // подстрока
+s.find(sub)     // поиск (возвращает позицию или npos)
+s.empty()       // пустая ли строка
 ```
 
 ## Итерация
 
 ```cpp
-std::string s = "hello";
 for (char c : s) {
-    std::cout << c;
+    cout << c << endl;
 }
 ```

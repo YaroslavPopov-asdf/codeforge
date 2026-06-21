@@ -1,0 +1,11 @@
+#include <iostream>
+using namespace std;
+
+// Напишите функцию isPrime здесь
+
+int main() {
+    int n;
+    cin >> n;
+    cout << (isPrime(n) ? "yes" : "no") << endl;
+    return 0;
+}

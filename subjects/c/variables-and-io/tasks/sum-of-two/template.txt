@@ -1,0 +1,9 @@
+#include <stdio.h>
+
+int main() {
+    int a, b;
+    scanf("%d%d", &a, &b);
+    // Напишите ваш код здесь
+
+    return 0;
+}

@@ -1,0 +1,1 @@
+{"type": "io", "timeout": 5, "cases": [{"name": "2^10", "stdin": "2 10", "expected_stdout": "1024\n", "expected_exit_code": 0}, {"name": "3^3", "stdin": "3 3", "expected_stdout": "27\n", "expected_exit_code": 0}, {"name": "5^0", "stdin": "5 0", "expected_stdout": "1\n", "expected_exit_code": 0}]}

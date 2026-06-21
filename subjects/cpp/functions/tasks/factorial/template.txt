@@ -1,0 +1,11 @@
+#include <iostream>
+using namespace std;
+
+// Напишите функцию factorial здесь
+
+int main() {
+    int n;
+    cin >> n;
+    cout << factorial(n) << endl;
+    return 0;
+}

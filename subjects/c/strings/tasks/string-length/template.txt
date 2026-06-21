@@ -1,0 +1,9 @@
+#include <stdio.h>
+
+int main() {
+    char str[101];
+    fgets(str, 101, stdin);
+    // Напишите ваш код здесь
+
+    return 0;
+}

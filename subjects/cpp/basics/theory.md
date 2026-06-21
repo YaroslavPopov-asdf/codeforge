@@ -1,38 +1,27 @@
 # Основы C++
 
-C++ — это язык, созданный как расширение C, добавляющий объектно-ориентированное и обобщённое программирование.
+C++ — это язык программирования, расширяющий C объектно-ориентированными возможностями.
 
-## Базовая структура
+## Первая программа
 
 ```cpp
 #include <iostream>
+using namespace std;
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    cout << "Hello, World!" << endl;
     return 0;
 }
-```
-
-- `#include <iostream>` — подключает потоки ввода-вывода
-- `std::cout` — вывод в консоль
-- `std::cin` — ввод с клавиатуры
-- `std::endl` — перевод строки
-
-## Переменные и типы
-
-```cpp
-int age = 25;
-double pi = 3.14159;
-char letter = 'A';
-std::string name = "Alice";
-bool isReady = true;
 ```
 
 ## Ввод и вывод
 
 ```cpp
 int x;
-std::cout << "Введите число: ";
-std::cin >> x;
-std::cout << "Вы ввели: " << x << std::endl;
+cin >> x;
+cout << "x = " << x << endl;
 ```
+
+- `cout` — вывод (console output)
+- `cin` — ввод (console input)
+- `endl` — конец строки

@@ -1,49 +1,31 @@
-# Владение и строки в Rust
+# Владение и заимствование
 
-## Владение (Ownership)
+## Правила владения
 
-Три правила:
-1. У каждого значения есть владелец
-2. Одновременно может быть только один владелец
-3. Когда владелец выходит из области видимости, значение удаляется
+1. Каждое значение в Rust имеет одну переменную-владельца
+2. Когда владелец выходит из области видимости, значение удаляется
 
 ```rust
-let s = String::from("hello");
-let t = s;       // s перемещается в t
-// println!("{}", s);  // ОШИБКА: s больше не владеет значением
+let s1 = String::from("hello");
+let s2 = s1;  // s1 перемещается в s2
+// println!("{}", s1);  // ошибка!
 ```
 
-## Заимствование (Borrowing)
+## Заимствование (references)
 
 ```rust
-fn calculate_length(s: &String) -> usize {
-    s.len()  // s — ссылка, не забирает владение
+fn len(s: &String) -> usize {
+    s.len()
 }
 
 let s = String::from("hello");
-let len = calculate_length(&s);
-println!("{}", len);  // можно использовать s, она не перемещена
+let l = len(&s);  // заимствование, s остаётся владельцем
 ```
 
 ## Изменяемое заимствование
 
 ```rust
 let mut s = String::from("hello");
-fn add_world(s: &mut String) {
-    s.push_str(" world");
-}
-add_world(&mut s);
-```
-
-## Строки
-
-```rust
-let s1 = String::from("hello");
-let s2 = "world";           // строковый срез (&str)
-let s3 = s1 + " " + s2;    // конкатенация
-
-// Итерация по символам
-for c in "привет".chars() {
-    println!("{}", c);
-}
+let r = &mut s;
+r.push_str(", world");
 ```

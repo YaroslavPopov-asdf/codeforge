@@ -1,0 +1,1 @@
+{"type": "io", "timeout": 5, "cases": [{"name": "100-30", "stdin": "1\n100\n2\n30\n0", "expected_stdout": "70\n", "expected_exit_code": 0}, {"name": "только пополнение", "stdin": "1\n50\n0", "expected_stdout": "50\n", "expected_exit_code": 0}, {"name": "овердрафт", "stdin": "1\n10\n2\n20\n0", "expected_stdout": "10\n", "expected_exit_code": 0}]}

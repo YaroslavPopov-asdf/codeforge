@@ -1,0 +1,20 @@
+#include <iostream>
+using namespace std;
+
+// Напишите класс BankAccount здесь
+
+int main() {
+    BankAccount acc;
+    int op;
+    double amount;
+
+    while (true) {
+        cin >> op;
+        if (op == 0) break;
+        cin >> amount;
+        if (op == 1) acc.deposit(amount);
+        else if (op == 2) acc.withdraw(amount);
+    }
+    cout << acc.getBalance() << endl;
+    return 0;
+}

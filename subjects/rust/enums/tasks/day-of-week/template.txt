@@ -1,0 +1,12 @@
+use std::io;
+
+// Напишите enum Weekday и функцию is_weekend здесь
+
+fn main() {
+    let mut input = String::new();
+    io::stdin().read_line(&mut input).unwrap();
+    let n: usize = input.trim().parse().unwrap();
+    let days = [Weekday::Monday, Weekday::Tuesday, Weekday::Wednesday,
+                Weekday::Thursday, Weekday::Friday, Weekday::Saturday, Weekday::Sunday];
+    println!("{}", if is_weekend(&days[n]) { "yes" } else { "no" });
+}

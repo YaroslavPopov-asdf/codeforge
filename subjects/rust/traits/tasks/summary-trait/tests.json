@@ -1,0 +1,1 @@
+{"type": "io", "timeout": 10, "cases": [{"name": "1984", "stdin": "1984\nGeorge Orwell", "expected_stdout": "«1984» — George Orwell\n", "expected_exit_code": 0}, {"name": "Мастер и Маргарита", "stdin": "Мастер и Маргарита\nМихаил Булгаков", "expected_stdout": "«Мастер и Маргарита» — Михаил Булгаков\n", "expected_exit_code": 0}]}

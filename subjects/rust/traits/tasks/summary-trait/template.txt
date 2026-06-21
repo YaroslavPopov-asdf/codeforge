@@ -1,0 +1,15 @@
+use std::io;
+
+// Напишите трейт Summary, структуру Book и реализацию здесь
+
+fn main() {
+    let mut title = String::new();
+    let mut author = String::new();
+    io::stdin().read_line(&mut title).unwrap();
+    io::stdin().read_line(&mut author).unwrap();
+    let book = Book {
+        title: title.trim().to_string(),
+        author: author.trim().to_string(),
+    };
+    println!("{}", book.summarize());
+}

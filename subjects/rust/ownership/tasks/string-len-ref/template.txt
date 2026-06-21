@@ -1,0 +1,10 @@
+use std::io;
+
+// Напишите функцию string_len здесь
+
+fn main() {
+    let mut input = String::new();
+    io::stdin().read_line(&mut input).unwrap();
+    let s = input.trim().to_string();
+    println!("{}", string_len(&s));
+}

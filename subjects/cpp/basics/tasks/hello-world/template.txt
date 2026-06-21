@@ -1,7 +1,0 @@
-#include <iostream>
-
-int main() {
-    // Напишите ваш код здесь
-
-    return 0;
-}

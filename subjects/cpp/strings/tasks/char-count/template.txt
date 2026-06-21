@@ -1,0 +1,12 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string s;
+    char c;
+    cin >> s >> c;
+    // Напишите ваш код здесь
+
+    return 0;
+}

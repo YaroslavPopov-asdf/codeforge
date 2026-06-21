@@ -1,0 +1,9 @@
+#include <stdio.h>
+
+int main() {
+    int year;
+    scanf("%d", &year);
+    // Напишите ваш код здесь
+
+    return 0;
+}

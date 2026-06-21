@@ -1,0 +1,1 @@
+{"type": "io", "timeout": 10, "cases": [{"name": "5 9 3", "stdin": "5 9 3", "expected_stdout": "9\n", "expected_exit_code": 0}, {"name": "1 2 3", "stdin": "1 2 3", "expected_stdout": "3\n", "expected_exit_code": 0}, {"name": "отрицательные", "stdin": "-5 -2 -8", "expected_stdout": "-2\n", "expected_exit_code": 0}]}

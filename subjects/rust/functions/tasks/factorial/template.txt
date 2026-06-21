@@ -1,3 +1,10 @@
+use std::io;
+
+// Напишите функцию factorial здесь
+
 fn main() {
-    // Напишите ваш код здесь
+    let mut input = String::new();
+    io::stdin().read_line(&mut input).unwrap();
+    let n: u32 = input.trim().parse().unwrap();
+    println!("{}", factorial(n));
 }

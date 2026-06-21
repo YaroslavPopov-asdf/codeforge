@@ -1,0 +1,19 @@
+use std::io;
+
+// Напишите enum Operation и функцию calculate здесь
+
+fn main() {
+    let mut input = String::new();
+    io::stdin().read_line(&mut input).unwrap();
+    let parts: Vec<&str> = input.trim().split_whitespace().collect();
+    let a: f64 = parts[0].parse().unwrap();
+    let op = match parts[1] {
+        "+" => Operation::Add,
+        "-" => Operation::Subtract,
+        "*" => Operation::Multiply,
+        "/" => Operation::Divide,
+        _ => panic!("Unknown operator"),
+    };
+    let b: f64 = parts[2].parse().unwrap();
+    println!("{}", calculate(a, op, b));
+}

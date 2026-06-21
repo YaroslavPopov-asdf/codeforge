@@ -1,0 +1,1 @@
+{"type": "io", "timeout": 10, "cases": [{"name": "hello", "stdin": "hello", "expected_stdout": "hello world\n", "expected_exit_code": 0}, {"name": "good", "stdin": "good", "expected_stdout": "good world\n", "expected_exit_code": 0}]}

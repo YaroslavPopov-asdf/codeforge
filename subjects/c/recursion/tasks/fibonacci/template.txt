@@ -1,0 +1,10 @@
+#include <stdio.h>
+
+// Напишите рекурсивную функцию fibonacci здесь
+
+int main() {
+    int n;
+    scanf("%d", &n);
+    printf("%d\n", fibonacci(n));
+    return 0;
+}

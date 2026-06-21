@@ -1,0 +1,11 @@
+use std::io;
+
+// Напишите трейт Area, структуру Circle и реализацию здесь
+
+fn main() {
+    let mut input = String::new();
+    io::stdin().read_line(&mut input).unwrap();
+    let radius: f64 = input.trim().parse().unwrap();
+    let circle = Circle { radius };
+    println!("{}", circle.area());
+}

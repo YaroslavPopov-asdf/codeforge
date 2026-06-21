@@ -1,0 +1,10 @@
+use std::io;
+
+// Напишите функцию is_prime здесь
+
+fn main() {
+    let mut input = String::new();
+    io::stdin().read_line(&mut input).unwrap();
+    let n: u32 = input.trim().parse().unwrap();
+    println!("{}", if is_prime(n) { "yes" } else { "no" });
+}
