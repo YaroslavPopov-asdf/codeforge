@@ -50,13 +50,23 @@ body {
 .prose li,
 .prose ul,
 .prose ol {
-  line-height: 1.85;
+  line-height: 1.65;
 }
 
 .prose p {
-  margin-bottom: 1.25em;
+  margin-bottom: 0.75em;
 }
 
 .prose li {
-  margin-bottom: 0.5em;
+  margin-bottom: 0.35em;
+}
+
+.prose pre {
+  margin-top: 0.75em;
+  margin-bottom: 0.75em;
+}
+
+.prose p + pre,
+.prose pre + p {
+  margin-top: 0.5em;
 }

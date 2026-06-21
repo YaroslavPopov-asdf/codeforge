@@ -1,6 +1,9 @@
 import Link from "next/link"
+import { auth } from "@/lib/auth"
 
-export default function Home() {
+export default async function Home() {
+  const session = await auth()
+
   return (
     <div className="max-w-6xl mx-auto px-4">
       <section className="py-20 md:py-32 text-center">
@@ -18,12 +21,14 @@ export default function Home() {
           >
             Начать обучение
           </Link>
-          <Link
-            href="/auth"
-            className="border border-stone-700 text-stone-300 px-6 py-3 rounded-lg font-medium hover:bg-stone-800 transition-colors"
-          >
-            Войти
-          </Link>
+          {!session && (
+            <Link
+              href="/auth"
+              className="border border-stone-700 text-stone-300 px-6 py-3 rounded-lg font-medium hover:bg-stone-800 transition-colors"
+            >
+              Войти
+            </Link>
+          )}
         </div>
       </section>
 

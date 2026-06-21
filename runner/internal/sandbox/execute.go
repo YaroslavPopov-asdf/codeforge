@@ -120,7 +120,7 @@ func Execute(input ExecuteInput) (types.ExecuteResponse, error) {
 		passed := actual == tc.ExpectedStdout
 		resultOutput := ""
 		if !passed {
-			resultOutput = fmt.Sprintf("Ожидалось: %q\nПолучено: %q", tc.ExpectedStdout, actual)
+			resultOutput = fmt.Sprintf("Вывод программы:\n%s", actual)
 		}
 		results = append(results, types.TestResult{
 			Name:   tc.Name,

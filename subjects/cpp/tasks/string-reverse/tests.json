@@ -1,0 +1,24 @@
+{
+  "type": "io",
+  "timeout": 5,
+  "cases": [
+    {
+      "name": "hello",
+      "stdin": "hello",
+      "expected_stdout": "olleh\n",
+      "expected_exit_code": 0
+    },
+    {
+      "name": "rust",
+      "stdin": "rust",
+      "expected_stdout": "tsur\n",
+      "expected_exit_code": 0
+    },
+    {
+      "name": "несколько слов",
+      "stdin": "hello world",
+      "expected_stdout": "dlrow olleh\n",
+      "expected_exit_code": 0
+    }
+  ]
+}

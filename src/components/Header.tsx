@@ -24,7 +24,7 @@ export function Header() {
           {session ? (
             <>
               <Link
-                href="/profile"
+                href="/subjects"
                 className="text-stone-400 hover:text-stone-100 transition-colors"
               >
                 {session.user?.name ?? "Профиль"}

@@ -37,6 +37,19 @@ export function getSubjectMeta(subjectId: string): SubjectMeta | null {
 }
 
 export function getSubjectTheory(subjectId: string): string {
+  const theoryDir = path.join(SUBJECTS_DIR, subjectId, "theory")
+  if (fs.existsSync(theoryDir)) {
+    try {
+      return fs
+        .readdirSync(theoryDir)
+        .filter((f) => f.endsWith(".md"))
+        .sort()
+        .map((f) => readFileSafe(path.join(theoryDir, f)))
+        .join("\n\n---\n\n")
+    } catch {
+      return ""
+    }
+  }
   const theoryPath = path.join(SUBJECTS_DIR, subjectId, "theory.md")
   return readFileSafe(theoryPath)
 }

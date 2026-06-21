@@ -1,0 +1,24 @@
+{
+  "type": "io",
+  "timeout": 5,
+  "cases": [
+    {
+      "name": "5",
+      "stdin": "5",
+      "expected_stdout": "15\n",
+      "expected_exit_code": 0
+    },
+    {
+      "name": "1",
+      "stdin": "1",
+      "expected_stdout": "1\n",
+      "expected_exit_code": 0
+    },
+    {
+      "name": "10",
+      "stdin": "10",
+      "expected_stdout": "55\n",
+      "expected_exit_code": 0
+    }
+  ]
+}
