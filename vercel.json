@@ -2,12 +2,5 @@
   "buildCommand": "next build",
   "installCommand": "npm install",
   "framework": "nextjs",
-  "outputDirectory": ".next",
-  "env": {
-    "AUTH_SECRET": "@auth-secret",
-    "AUTH_GITHUB_ID": "@auth-github-id",
-    "AUTH_GITHUB_SECRET": "@auth-github-secret",
-    "DATABASE_URL": "@database-url",
-    "RUNNER_URL": "@runner-url"
-  }
+  "outputDirectory": ".next"
 }
