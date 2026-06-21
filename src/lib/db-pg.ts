@@ -79,11 +79,12 @@ export async function queryUserById(id: string) {
   return row(rows[0])
 }
 
-export async function createUser(user: { id: string; name?: string; email?: string; image?: string }) {
+export async function createUser(user: { id?: string; name?: string; email?: string; image?: string }) {
   await initPromise
+  const id = user.id ?? crypto.randomUUID()
   await pool.query(
     "INSERT INTO users (id, name, email, image) VALUES ($1, $2, $3, $4) ON CONFLICT (id) DO NOTHING",
-    [user.id, user.name ?? null, user.email ?? null, user.image ?? null]
+    [id, user.name ?? null, user.email ?? null, user.image ?? null]
   )
 }
 
@@ -154,15 +155,16 @@ export async function createAccount(account: {
 }
 
 export async function createSession(session: {
-  id: string
+  id?: string
   sessionToken: string
   userId: string
   expires: string
 }) {
   await initPromise
+  const id = session.id ?? crypto.randomUUID()
   await pool.query(
     "INSERT INTO sessions (id, session_token, user_id, expires) VALUES ($1, $2, $3, $4)",
-    [session.id, session.sessionToken, session.userId, session.expires]
+    [id, session.sessionToken, session.userId, session.expires]
   )
 }
 

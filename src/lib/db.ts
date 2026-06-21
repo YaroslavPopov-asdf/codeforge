@@ -49,11 +49,12 @@ export async function queryUserById(id: string) {
   return row(getSqliteDb().prepare("SELECT * FROM users WHERE id = ?").get(id))
 }
 
-export async function createUser(user: { id: string; name?: string; email?: string; image?: string }) {
+export async function createUser(user: { id?: string; name?: string; email?: string; image?: string }) {
   if (usePg) return (await pgMod()).createUser(user)
+  const id = user.id ?? crypto.randomUUID()
   getSqliteDb()
     .prepare("INSERT OR IGNORE INTO users (id, name, email, image) VALUES (?, ?, ?, ?)")
-    .run(user.id, user.name ?? null, user.email ?? null, user.image ?? null)
+    .run(id, user.name ?? null, user.email ?? null, user.image ?? null)
 }
 
 export async function getProgressByUserId(userId: string) {
@@ -89,9 +90,10 @@ export async function createAccount(account: {
       account.token_type ?? null, account.scope ?? null, account.id_token ?? null, account.session_state ?? null)
 }
 
-export async function createSession(session: { id: string; sessionToken: string; userId: string; expires: string }) {
+export async function createSession(session: { id?: string; sessionToken: string; userId: string; expires: string }) {
   if (usePg) return (await pgMod()).createSession(session)
-  getSqliteDb().prepare("INSERT INTO sessions (id, session_token, user_id, expires) VALUES (?, ?, ?, ?)").run(session.id, session.sessionToken, session.userId, session.expires)
+  const id = session.id ?? crypto.randomUUID()
+  getSqliteDb().prepare("INSERT INTO sessions (id, session_token, user_id, expires) VALUES (?, ?, ?, ?)").run(id, session.sessionToken, session.userId, session.expires)
 }
 
 export async function getSessionAndUser(sessionToken: string) {
