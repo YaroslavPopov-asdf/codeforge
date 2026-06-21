@@ -9,6 +9,7 @@ services:
       - PORT=8080
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/cf-runner:/tmp/cf-runner
     # Prerequisite: build the sandbox image first
     #   docker build -f runner/sandbox.Dockerfile -t codeforge-sandbox runner/
 

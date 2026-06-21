@@ -20,6 +20,14 @@ type ExecuteInput struct {
 
 const sandboxImage = "codeforge-sandbox"
 
+func workDirBase() string {
+	dir := os.Getenv("CF_WORK_DIR")
+	if dir == "" {
+		dir = "/tmp/cf-runner"
+	}
+	return dir
+}
+
 func dockerArgs(workDir string) []string {
 	return []string{
 		"run", "--rm",
@@ -33,7 +41,7 @@ func dockerArgs(workDir string) []string {
 }
 
 func Execute(input ExecuteInput) (types.ExecuteResponse, error) {
-	workDir := filepath.Join(os.TempDir(), "cf-"+uuid.New().String())
+	workDir := filepath.Join(workDirBase(), "cf-"+uuid.New().String())
 	if err := os.MkdirAll(workDir, 0755); err != nil {
 		return types.ExecuteResponse{}, fmt.Errorf("create work dir: %w", err)
 	}
