@@ -11,14 +11,14 @@ interface TestResult {
 interface CodeEditorProps {
   initialCode: string
   language: string
-  subjectId: string
+  keyPrefix: string
   taskId: string
 }
 
 export function CodeEditor({
   initialCode,
   language,
-  subjectId,
+  keyPrefix,
   taskId,
 }: CodeEditorProps) {
   const [code, setCode] = useState(initialCode)
@@ -37,7 +37,7 @@ export function CodeEditor({
       const res = await fetch("/api/execute", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ subjectId, taskId, code, language }),
+        body: JSON.stringify({ keyPrefix, taskId, code, language }),
       })
       if (!res.ok) {
         const text = await res.text()
@@ -57,10 +57,10 @@ export function CodeEditor({
           await fetch("/api/progress", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ subjectId, taskId }),
+            body: JSON.stringify({ keyPrefix, taskId }),
           })
         } catch {
-          // progress save failure is non-critical
+          // non-critical
         }
       }
     } catch {
@@ -70,9 +70,6 @@ export function CodeEditor({
       setRunning(false)
     }
   }
-
-  const allPassed =
-    testResults.length > 0 && testResults.every((t) => t.passed)
 
   return (
     <div className="space-y-4">

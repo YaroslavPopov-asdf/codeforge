@@ -1,39 +1,42 @@
 import { notFound } from "next/navigation"
-import { getSubjectMeta, getTask } from "@/lib/subjects"
+import { getLanguageMeta, getSubject, getTask } from "@/lib/subjects"
 import { isTaskCompleted } from "@/lib/progress"
 import { CodeEditor } from "@/components/CodeEditor"
 import Markdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import { auth } from "@/lib/auth"
+import Link from "next/link"
 
 export default async function TaskPage({
   params,
 }: {
-  params: Promise<{ subjectId: string; taskId: string }>
+  params: Promise<{ languageId: string; subjectId: string; taskId: string }>
 }) {
-  const { subjectId, taskId } = await params
-  const subjectMeta = getSubjectMeta(subjectId)
-  const task = getTask(subjectId, taskId)
+  const { languageId, subjectId, taskId } = await params
+  const langMeta = getLanguageMeta(languageId)
+  const subject = getSubject(languageId, subjectId)
+  const task = getTask(languageId, subjectId, taskId)
 
-  if (!subjectMeta || !task) notFound()
+  if (!langMeta || !subject || !task) notFound()
 
   const session = await auth()
-  const completed =
-    session?.user?.id
-      ? await isTaskCompleted(subjectId, taskId)
-      : false
-
-  const langMap: Record<string, string> = {
-    c: "c",
-    cpp: "cpp",
-    rust: "rust",
-  }
+  const taskKey = `${languageId}/${subjectId}`
+  const completed = session?.user?.id
+    ? await isTaskCompleted(taskKey, taskId)
+    : false
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-12">
       <div className="mb-6">
         <div className="text-sm text-stone-500 mb-1">
-          {subjectMeta.icon} {subjectMeta.title} / Задание {task.meta.order}
+          <Link href={`/subjects/${languageId}`} className="hover:text-stone-300">
+            {langMeta.icon} {langMeta.title}
+          </Link>
+          {" / "}
+          <Link href={`/subjects/${languageId}/${subjectId}`} className="hover:text-stone-300">
+            {subject.meta.title}
+          </Link>
+          {" / Задание "}{task.meta.order}
         </div>
         <h1 className="text-2xl font-bold">{task.meta.title}</h1>
       </div>
@@ -56,8 +59,8 @@ export default async function TaskPage({
         <div>
           <CodeEditor
             initialCode={task.template}
-            language={langMap[subjectId] ?? "c"}
-            subjectId={subjectId}
+            language={languageId}
+            keyPrefix={`${languageId}/${subjectId}`}
             taskId={taskId}
           />
         </div>

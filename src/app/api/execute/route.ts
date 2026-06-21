@@ -5,8 +5,6 @@ import path from "path"
 import { execSync } from "child_process"
 import { auth } from "@/lib/auth"
 
-const RUNNER_URL = process.env.RUNNER_URL ?? "http://localhost:8080"
-
 interface TestCase {
   name: string
   stdin: string
@@ -27,9 +25,10 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "Not authenticated" }, { status: 401 })
   }
 
-  const { subjectId, taskId, code, language } = await req.json()
-  const task = getTask(subjectId, taskId)
+  const { keyPrefix, taskId, code, language } = await req.json()
+  const [languageId, subjectId] = (keyPrefix as string).split("/")
 
+  const task = getTask(languageId, subjectId, taskId)
   if (!task) {
     return Response.json({ error: "Task not found" }, { status: 404 })
   }
@@ -37,6 +36,7 @@ export async function POST(req: NextRequest) {
   const taskDir = path.join(
     process.cwd(),
     "subjects",
+    languageId,
     subjectId,
     "tasks",
     taskId
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          subject_id: subjectId,
+          subject_id: keyPrefix,
           task_id: taskId,
           code,
           language,

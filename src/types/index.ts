@@ -1,8 +1,14 @@
-export interface SubjectMeta {
+export interface LanguageMeta {
   id: string
   title: string
   description: string
   icon: string
+  order: number
+}
+
+export interface SubjectMeta {
+  id: string
+  title: string
   order: number
 }
 
@@ -17,7 +23,12 @@ export interface TaskMeta {
 export interface Subject {
   meta: SubjectMeta
   theory: string
-  tasks: Task[]
+  tasks: TaskMeta[]
+}
+
+export interface Language {
+  meta: LanguageMeta
+  subjects: Subject[]
 }
 
 export interface Task {

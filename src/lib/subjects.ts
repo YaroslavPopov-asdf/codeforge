@@ -1,6 +1,6 @@
 import fs from "fs"
 import path from "path"
-import type { SubjectMeta, TaskMeta, Subject, Task } from "@/types"
+import type { LanguageMeta, SubjectMeta, TaskMeta, Subject, Task } from "@/types"
 
 const SUBJECTS_DIR = path.join(process.cwd(), "subjects")
 
@@ -20,7 +20,7 @@ function readJsonSafe<T>(filePath: string): T | null {
   }
 }
 
-export function getSubjectIds(): string[] {
+function getLanguageIds(): string[] {
   try {
     return fs.readdirSync(SUBJECTS_DIR).filter((name) => {
       const stat = fs.statSync(path.join(SUBJECTS_DIR, name))
@@ -31,31 +31,35 @@ export function getSubjectIds(): string[] {
   }
 }
 
-export function getSubjectMeta(subjectId: string): SubjectMeta | null {
-  const metaPath = path.join(SUBJECTS_DIR, subjectId, "meta.json")
+export function getLanguageMeta(languageId: string): LanguageMeta | null {
+  const metaPath = path.join(SUBJECTS_DIR, languageId, "meta.json")
+  return readJsonSafe<LanguageMeta>(metaPath)
+}
+
+export function getSubjectIds(languageId: string): string[] {
+  const langDir = path.join(SUBJECTS_DIR, languageId)
+  try {
+    return fs.readdirSync(langDir).filter((name) => {
+      const stat = fs.statSync(path.join(langDir, name))
+      return stat.isDirectory() && !name.startsWith(".") && name !== "tasks"
+    })
+  } catch {
+    return []
+  }
+}
+
+export function getSubjectMeta(languageId: string, subjectId: string): SubjectMeta | null {
+  const metaPath = path.join(SUBJECTS_DIR, languageId, subjectId, "meta.json")
   return readJsonSafe<SubjectMeta>(metaPath)
 }
 
-export function getSubjectTheory(subjectId: string): string {
-  const theoryDir = path.join(SUBJECTS_DIR, subjectId, "theory")
-  if (fs.existsSync(theoryDir)) {
-    try {
-      return fs
-        .readdirSync(theoryDir)
-        .filter((f) => f.endsWith(".md"))
-        .sort()
-        .map((f) => readFileSafe(path.join(theoryDir, f)))
-        .join("\n\n---\n\n")
-    } catch {
-      return ""
-    }
-  }
-  const theoryPath = path.join(SUBJECTS_DIR, subjectId, "theory.md")
+export function getSubjectTheory(languageId: string, subjectId: string): string {
+  const theoryPath = path.join(SUBJECTS_DIR, languageId, subjectId, "theory.md")
   return readFileSafe(theoryPath)
 }
 
-export function getSubjectTasks(subjectId: string): TaskMeta[] {
-  const tasksDir = path.join(SUBJECTS_DIR, subjectId, "tasks")
+export function getSubjectTasks(languageId: string, subjectId: string): TaskMeta[] {
+  const tasksDir = path.join(SUBJECTS_DIR, languageId, subjectId, "tasks")
   try {
     return fs
       .readdirSync(tasksDir)
@@ -69,7 +73,7 @@ export function getSubjectTasks(subjectId: string): TaskMeta[] {
         )
         return {
           id: name,
-          subjectId,
+          subjectId: `${languageId}/${subjectId}`,
           title: meta?.title ?? name,
           difficulty: meta?.difficulty ?? 1,
           order: meta?.order ?? 0,
@@ -81,55 +85,40 @@ export function getSubjectTasks(subjectId: string): TaskMeta[] {
   }
 }
 
-export function getTask(
-  subjectId: string,
-  taskId: string
-): Task | null {
-  const metaDir = path.join(SUBJECTS_DIR, subjectId, "tasks", taskId)
-  const meta = readJsonSafe<TaskMeta>(path.join(metaDir, "meta.json"))
+export function getSubject(languageId: string, subjectId: string): Subject | null {
+  const meta = getSubjectMeta(languageId, subjectId)
   if (!meta) return null
-
-  const description = readFileSafe(path.join(metaDir, "task.md"))
-  const template = readFileSafe(path.join(metaDir, "template.txt"))
-
-  const testFiles: Record<string, string> = {}
-  try {
-    const files = fs.readdirSync(metaDir)
-    for (const file of files) {
-      if (file.startsWith("test.") || file.startsWith("tests.")) {
-        testFiles[file] = readFileSafe(path.join(metaDir, file))
-      }
-    }
-  } catch {
-    // no test files
-  }
-
   return {
-    meta: { ...meta, id: taskId, subjectId },
-    description,
-    template,
-    testFiles,
+    meta: { ...meta, id: subjectId },
+    theory: getSubjectTheory(languageId, subjectId),
+    tasks: getSubjectTasks(languageId, subjectId),
   }
 }
 
-export function getAllSubjects(): Subject[] {
-  return getSubjectIds()
+export function getTask(
+  languageId: string,
+  subjectId: string,
+  taskId: string
+): Task | null {
+  const taskDir = path.join(SUBJECTS_DIR, languageId, subjectId, "tasks", taskId)
+  const meta = readJsonSafe<TaskMeta>(path.join(taskDir, "meta.json"))
+  if (!meta) return null
+
+  return {
+    meta: { ...meta, id: taskId, subjectId: `${languageId}/${subjectId}` },
+    description: readFileSafe(path.join(taskDir, "task.md")),
+    template: readFileSafe(path.join(taskDir, "template.txt")),
+    testFiles: {},
+  }
+}
+
+export function getAllLanguages(): LanguageMeta[] {
+  return getLanguageIds()
     .map((id) => {
-      const meta = getSubjectMeta(id)
-      const theory = getSubjectTheory(id)
-      const tasks = getSubjectTasks(id)
+      const meta = getLanguageMeta(id)
       if (!meta) return null
-      return {
-        meta: { ...meta, id },
-        theory,
-        tasks: tasks.map((t) => ({
-          meta: t,
-          description: "",
-          template: "",
-          testFiles: {},
-        })),
-      } as Subject
+      return { ...meta, id }
     })
-    .filter((s): s is Subject => s !== null)
-    .sort((a, b) => a.meta.order - b.meta.order)
+    .filter((l): l is LanguageMeta => l !== null)
+    .sort((a, b) => a.order - b.order)
 }

@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react"
 import Link from "next/link"
-import type { TaskMeta, SubjectMeta } from "@/types"
+import type { TaskMeta } from "@/types"
 
 const difficultyLabels: Record<number, string> = {
   1: "Лёгкая",
@@ -17,10 +17,12 @@ const difficultyColors: Record<number, string> = {
 }
 
 export function TaskList({
+  languageId,
   subjectId,
   tasks,
   completedTasks,
 }: {
+  languageId: string
   subjectId: string
   tasks: TaskMeta[]
   completedTasks: Set<string>
@@ -32,7 +34,7 @@ export function TaskList({
         return (
           <Link
             key={task.id}
-            href={`/subjects/${subjectId}/tasks/${task.id}`}
+            href={`/subjects/${languageId}/${subjectId}/tasks/${task.id}`}
             className="flex items-center gap-4 rounded-lg border border-stone-800 bg-stone-900/30 p-4 hover:border-stone-600 transition-all"
           >
             <div

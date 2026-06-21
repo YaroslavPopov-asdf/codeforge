@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "Not authenticated" }, { status: 401 })
   }
 
-  const { subjectId, taskId } = await req.json()
-  await markTaskCompleted(subjectId, taskId)
+  const { keyPrefix, taskId } = await req.json()
+  await markTaskCompleted(keyPrefix, taskId)
   return Response.json({ ok: true })
 }
