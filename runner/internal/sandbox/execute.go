@@ -18,6 +18,20 @@ type ExecuteInput struct {
 	Spec     types.TestSpec
 }
 
+const sandboxImage = "codeforge-sandbox"
+
+func dockerArgs(workDir string) []string {
+	return []string{
+		"run", "--rm",
+		"--network", "none",
+		"--memory", "256m",
+		"--cpus", "1",
+		"-v", workDir + ":/work",
+		"-w", "/work",
+		sandboxImage,
+	}
+}
+
 func Execute(input ExecuteInput) (types.ExecuteResponse, error) {
 	workDir := filepath.Join(os.TempDir(), "cf-"+uuid.New().String())
 	if err := os.MkdirAll(workDir, 0755); err != nil {
@@ -39,37 +53,49 @@ func Execute(input ExecuteInput) (types.ExecuteResponse, error) {
 		return types.ExecuteResponse{}, fmt.Errorf("write source: %w", err)
 	}
 
-	binary := filepath.Join(workDir, "solution")
-	var compileCmd *exec.Cmd
+	args := dockerArgs(workDir)
 
+	var compileCmd []string
 	switch input.Language {
 	case "c":
-		compileCmd = exec.Command("gcc", "-Wall", "-Wextra", "-std=c99", "-o", binary, srcFile)
+		compileCmd = []string{"gcc", "-Wall", "-Wextra", "-std=c99", "-o", "solution", "solution.c"}
 	case "cpp":
-		compileCmd = exec.Command("g++", "-Wall", "-Wextra", "-std=c++17", "-o", binary, srcFile)
+		compileCmd = []string{"g++", "-Wall", "-Wextra", "-std=c++17", "-o", "solution", "solution.cpp"}
 	case "rust":
-		compileCmd = exec.Command("rustc", "-o", binary, srcFile)
+		compileCmd = []string{"rustc", "-o", "solution", "solution.rs"}
 	default:
 		return types.ExecuteResponse{}, fmt.Errorf("unsupported language: %s", input.Language)
 	}
 
-	var compileOut bytes.Buffer
-	compileCmd.Stdout = &compileOut
-	compileCmd.Stderr = &compileOut
-
-	if err := compileCmd.Run(); err != nil {
+	fullArgs := append(args, compileCmd...)
+	var compileBuf bytes.Buffer
+	cmd := exec.Command("docker", fullArgs...)
+	cmd.Stdout = &compileBuf
+	cmd.Stderr = &compileBuf
+	if err := cmd.Run(); err != nil {
 		return types.ExecuteResponse{
 			Passed: false,
-			Output: compileOut.String(),
-			Errors: compileOut.String(),
+			Output: compileBuf.String(),
+			Errors: compileBuf.String(),
+		}, nil
+	}
+	compileOutput := compileBuf.String()
+
+	binaryPath := filepath.Join(workDir, "solution")
+	if _, err := os.Stat(binaryPath); err != nil {
+		return types.ExecuteResponse{
+			Passed: false,
+			Output: "",
+			Errors: fmt.Sprintf("compilation failed: binary not created\n%s", compileOutput),
 		}, nil
 	}
 
 	var results []types.TestResult
 	for _, tc := range input.Spec.Cases {
-		var outBuf, errBuf bytes.Buffer
-		cmd := exec.Command(binary)
+		runArgs := append(args, "./solution")
+		cmd := exec.Command("docker", runArgs...)
 		cmd.Stdin = strings.NewReader(tc.Stdin)
+		var outBuf, errBuf bytes.Buffer
 		cmd.Stdout = &outBuf
 		cmd.Stderr = &errBuf
 
@@ -105,7 +131,7 @@ func Execute(input ExecuteInput) (types.ExecuteResponse, error) {
 
 	return types.ExecuteResponse{
 		Passed:      allPassed,
-		Output:      compileOut.String(),
+		Output:      compileOutput,
 		TestResults: results,
 	}, nil
 }
