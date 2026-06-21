@@ -125,7 +125,7 @@ export async function getAccount(provider: string, providerAccountId: string) {
 }
 
 export async function createAccount(account: {
-  id: string
+  id?: string
   userId: string
   type: string
   provider: string
@@ -139,11 +139,12 @@ export async function createAccount(account: {
   session_state?: string
 }) {
   await initPromise
+  const id = account.id ?? crypto.randomUUID()
   await pool.query(
     `INSERT INTO accounts (id, user_id, type, provider, provider_account_id, refresh_token, access_token, expires_at, token_type, scope, id_token, session_state)
      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
     [
-      account.id, account.userId, account.type, account.provider,
+      id, account.userId, account.type, account.provider,
       account.providerAccountId, account.refresh_token ?? null,
       account.access_token ?? null, account.expires_at ?? null,
       account.token_type ?? null, account.scope ?? null,

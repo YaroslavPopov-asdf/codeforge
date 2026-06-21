@@ -76,14 +76,15 @@ export async function getAccount(provider: string, providerAccountId: string) {
 }
 
 export async function createAccount(account: {
-  id: string; userId: string; type: string; provider: string; providerAccountId: string
+  id?: string; userId: string; type: string; provider: string; providerAccountId: string
   refresh_token?: string; access_token?: string; expires_at?: number
   token_type?: string; scope?: string; id_token?: string; session_state?: string
 }) {
   if (usePg) return (await pgMod()).createAccount(account)
+  const id = account.id ?? crypto.randomUUID()
   getSqliteDb()
     .prepare(`INSERT INTO accounts (id, user_id, type, provider, provider_account_id, refresh_token, access_token, expires_at, token_type, scope, id_token, session_state) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
-    .run(account.id, account.userId, account.type, account.provider, account.providerAccountId,
+    .run(id, account.userId, account.type, account.provider, account.providerAccountId,
       account.refresh_token ?? null, account.access_token ?? null, account.expires_at ?? null,
       account.token_type ?? null, account.scope ?? null, account.id_token ?? null, account.session_state ?? null)
 }
